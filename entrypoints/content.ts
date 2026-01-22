@@ -1,6 +1,13 @@
+// entrypoints/content.ts
+import { clickButton } from "@/utils/automation/clickButton";
+
 export default defineContentScript({
-  matches: ['*://*.google.com/*'],
+  matches: ["*://*.tcgplayer.com/*"],
   main() {
-    console.log('Hello content.');
+    browser.runtime.onMessage.addListener(async (message) => {
+      if (message.type === "CLICK_BUTTON") {
+        return await clickButton();
+      }
+    });
   },
 });
