@@ -4,7 +4,7 @@ import wxtLogo from "/wxt.svg";
 import "./App.css";
 import TextInput from "@/components/TextInput";
 import { googleSheetUrl } from "@/utils/storage";
-import { google } from "googleapis";
+import { googleAuth } from "@/utils/auth";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,38 +16,26 @@ function App() {
     setUrl(newUrl);
     await googleSheetUrl.setValue(newUrl);
   }
+  async function authenticate() {
+    googleAuth();
+  }
 
-  async function getAndLog() {
-    const url = await googleSheetUrl.getValue();
-    console.log("URL is:", url);
+  async function refreshData() {
+    await browser.runtime.sendMessage({ type: "FETCH_SHEET" });
+    console.log("Data refreshed!");
   }
 
   return (
     <>
       <div>
-        <a href="https://wxt.dev" target="_blank">
-          <img src={wxtLogo} className="logo" alt="WXT logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <button onClick={authenticate}>Authenticate</button>
       </div>
-      <h1>WXT + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
         <TextInput value={url} onChange={handleChange} />
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
       <div>
-        <button onClick={getAndLog}>Click Page Button</button>
+        <button onClick={refreshData}>Refresh data</button>
       </div>
-      <p className="read-the-docs">
-        Click on the WXT and React logos to learn more
-      </p>
     </>
   );
 }

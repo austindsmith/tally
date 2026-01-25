@@ -3,6 +3,7 @@ import { storage } from "#imports";
 export const googleSheetUrl = storage.defineItem<string>(
   "local:googleSheetUrl",
   {
-    fallback: "",
+    fallback:
+      "https://docs.google.com/spreadsheets/d/1aSm4nwINqe_GxEDEjNlBy21mJzHi9Ort5iZJtpGBCyQ/edit?usp=sharing",
   },
 );

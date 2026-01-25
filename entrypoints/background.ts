@@ -1,19 +1,24 @@
+import { GoogleSpreadsheet } from "google-spreadsheet";
+import { getSheetId } from "../utils/parse";
 export default defineBackground(() => {
   console.log("Hello background!", { id: browser.runtime.id });
-  fetchSheetData();
+  browser.runtime.onMessage.addListener(async (message) => {
+    if (message.type === "FETCH_SHEET") {
+      const url = await googleSheetUrl.getValue();
+      const sheetId = getSheetId(url);
+      fetchSheetData(sheetId);
+    }
+    if (message.type === "AUTHENTICATE") {
+      return;
+    }
+  });
 });
 
-async function fetchSheetData() {
-  const sheetId = "1aSm4nwINqe_GxEDEjNlBy21mJzHi9Ort5iZJtpGBCyQ";
-  const sheetName = "Sheet1";
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
-
+async function fetchSheetData(url: string) {
   try {
     const response = await fetch(url);
     console.log("Response status:", response.status);
-
     const csvText = await response.text();
-    console.log("Raw CSV:", csvText);
 
     const rows = csvText
       .split("\n")

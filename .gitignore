@@ -27,3 +27,4 @@ web-ext.config.ts
 *.vscode
 *.prettierrc
 package-lock.json
+*.googleusercontent.com.json
