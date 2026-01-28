@@ -8,6 +8,7 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
 
 - [wxt framework](https://wxt.dev/)
 - [google-spreadsheet](https://www.npmjs.com/package/google-spreadsheet)
+- [daisy ui](https://daisyui.com)
 
 #### Documentation
 
