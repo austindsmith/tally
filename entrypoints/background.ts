@@ -2,6 +2,7 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 import { getSheetId } from "../utils/parse";
 export default defineBackground(() => {
   console.log("Hello background!", { id: browser.runtime.id });
+  console.log("Redirect URL:", chrome.identity.getRedirectURL());
   browser.runtime.onMessage.addListener(async (message) => {
     if (message.type === "FETCH_SHEET") {
       const url = await googleSheetUrl.getValue();

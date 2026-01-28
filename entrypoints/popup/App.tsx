@@ -1,10 +1,9 @@
 import { useState } from "react";
-import reactLogo from "@/assets/react.svg";
-import wxtLogo from "/wxt.svg";
 import "./App.css";
 import TextInput from "@/components/TextInput";
 import { googleSheetUrl } from "@/utils/storage";
-import { googleAuth } from "@/utils/auth";
+import { getAuthToken } from "@/utils/auth";
+import { useEffect } from "react";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,8 +15,13 @@ function App() {
     setUrl(newUrl);
     await googleSheetUrl.setValue(newUrl);
   }
-  async function authenticate() {
-    googleAuth();
+  async function handleLogin() {
+    try {
+      const token = await getAuthToken();
+      console.log("Authenticated successfully");
+    } catch (error) {
+      console.error("Authentication failed:", error);
+    }
   }
 
   async function refreshData() {
@@ -28,7 +32,7 @@ function App() {
   return (
     <>
       <div>
-        <button onClick={authenticate}>Authenticate</button>
+        <button onClick={handleLogin}>Authenticate</button>
       </div>
       <div className="card">
         <TextInput value={url} onChange={handleChange} />
