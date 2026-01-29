@@ -1,7 +1,6 @@
 import { defineConfig } from "wxt";
 import tailwindcss from "@tailwindcss/vite";
-import { resolve } from "path";
-// See https://wxt.dev/api/config.html
+
 export default defineConfig({
   manifest: {
     name: "Tally",
@@ -13,7 +12,7 @@ export default defineConfig({
       48: "icons/48.png",
       128: "icons/128.png",
     },
-    permissions: ["tabs", "activeTab", "scripting", "storage", "identity"],
+    permissions: ["activeTab", "scripting", "storage", "identity"],
     oauth2: {
       client_id:
         "94483234549-d804rllboarcjetek54ttfm3tolhoniq.apps.googleusercontent.com",
@@ -27,4 +26,5 @@ export default defineConfig({
     plugins: [tailwindcss()],
   }),
   modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
+  debug: true,
 });

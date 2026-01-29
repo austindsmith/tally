@@ -29,3 +29,5 @@ web-ext.config.ts
 package-lock.json
 *.googleusercontent.com.json
 .chrome-profile*
+.env
+tally-service-account.json

@@ -28,3 +28,4 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
 #### Notes
 
 - Call functions in `utils` from background.ts using `message.type ===` and then `const var = await functionFromUtils()`
+- Content scripts are the only scripts that can access the page's DOM
