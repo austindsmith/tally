@@ -28,3 +28,4 @@ web-ext.config.ts
 *.prettierrc
 package-lock.json
 *.googleusercontent.com.json
+.chrome-profile*

@@ -24,3 +24,7 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
   - Configure lets them click an element that will have a reference item, such as a name in a row.
   - Then they click the corresponding form field to fill in.
   - Both then set the selectors that the application will use for determining how to fill in the form (so it's dynamic)
+
+#### Notes
+
+- Call functions in `utils` from background.ts using `message.type ===` and then `const var = await functionFromUtils()`
