@@ -1,16 +1,14 @@
 import { getSheetId } from "../utils/parseUrl";
-import { readSheet } from "@/utils/googleSheets";
+import { getSheetNames, readSheet } from "@/utils/googleSheets";
 import { googleSheetUrl } from "@/utils/storage";
 
 export default defineBackground(() => {
-  console.log("Hello background!", { id: browser.runtime.id });
-  console.log("Redirect URL:", chrome.identity.getRedirectURL());
-
   browser.runtime.onMessage.addListener(async (message) => {
     if (message.type === "FETCH_SHEET") {
       const url = await googleSheetUrl.getValue();
       const sheetId = getSheetId(url);
-      readSheet(sheetId);
+      const sheetNames = await getSheetNames(sheetId);
+      const data = await readSheet(sheetId, sheetNames);
     }
     if (message.type === "AUTHENTICATE") {
       return;

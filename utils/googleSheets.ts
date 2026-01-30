@@ -1,31 +1,50 @@
-import { GoogleSpreadsheet } from "google-spreadsheet";
-import { JWT } from "google-auth-library";
 import creds from "../tally-service-account.json";
+import axios from "axios";
 
 const SCOPES = [
   "https://www.googleapis.com/auth/spreadsheets",
   "https://www.googleapis.com/auth/drive.file",
 ];
 
-export async function readSheet(sheetId: string) {
-  console.log(sheetId);
+export async function getSheetNames(sheetId: string) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`;
+  const options = {
+    method: "GET",
+    headers: { "x-goog-api-key": import.meta.env.WXT_GOOGLE_API_KEY },
+  };
 
-  const serviceAccountAuth = new JWT({
-    email: creds.client_email,
-    key: creds.private_key,
-    scopes: SCOPES,
-  });
+  const sheetNames = [];
 
-  const doc = new GoogleSpreadsheet(sheetId, serviceAccountAuth);
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    const sheets = data.sheets;
 
-  await doc.loadInfo();
-
-  console.log(doc.title);
-
+    for (let sheet in sheets) {
+      sheetNames.push(sheets[sheet].properties.title);
+      console.log(sheets[sheet].properties.title);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return sheetNames[0];
+}
+export async function readSheet(sheetId: string, sheetName: string) {
   // Add dropdown field to let user select which sheet to use
 
-  const sheet = doc.sheetsByIndex[0];
-  console.log(sheet.rowCount);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}`;
+  const options = {
+    method: "GET",
+    headers: { "x-goog-api-key": import.meta.env.WXT_GOOGLE_API_KEY },
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
 
   return;
 }

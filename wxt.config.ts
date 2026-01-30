@@ -25,6 +25,10 @@ export default defineConfig({
   vite: () => ({
     plugins: [tailwindcss()],
   }),
-  modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
+  modules: [
+    "@wxt-dev/module-react",
+    "@wxt-dev/auto-icons",
+    "wxt-module-console-forward",
+  ],
   debug: true,
 });

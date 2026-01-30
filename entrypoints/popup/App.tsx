@@ -29,7 +29,6 @@ function App() {
 
   async function refreshData() {
     await browser.runtime.sendMessage({ type: "FETCH_SHEET" });
-    console.log("Data refreshed!");
   }
 
   if (currentScreen === "login") {
