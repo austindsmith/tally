@@ -7,12 +7,14 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
 #### Libraries
 
 - [wxt framework](https://wxt.dev/)
-- [google-spreadsheet](https://www.npmjs.com/package/google-spreadsheet)
+- ~~[google-spreadsheet](https://www.npmjs.com/package/google-spreadsheet)~~ Not compatible with wxt
 - [daisy ui](https://daisyui.com)
+- [danfo.js](https://danfo.jsdata.org/) Like pandas
 
 #### Documentation
 
 - [google oauth](https://developer.chrome.com/docs/extensions/how-to/integrate/oauth)
+- [google sheets api](https://developers.google.com/workspace/sheets/api/reference/rest)
 
 #### Miscellaneous
 
