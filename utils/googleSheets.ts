@@ -1,11 +1,3 @@
-import creds from "../tally-service-account.json";
-import axios from "axios";
-
-const SCOPES = [
-  "https://www.googleapis.com/auth/spreadsheets",
-  "https://www.googleapis.com/auth/drive.file",
-];
-
 export async function getSheetNames(sheetId: string) {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`;
   const options = {
