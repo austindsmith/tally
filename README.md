@@ -10,6 +10,7 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
 - ~~[google-spreadsheet](https://www.npmjs.com/package/google-spreadsheet)~~ Not compatible with wxt
 - [daisy ui](https://daisyui.com)
 - [danfo.js](https://danfo.jsdata.org/) Like pandas
+- [heroicons](https://heroicons.com/) For svg icons
 
 #### Documentation
 

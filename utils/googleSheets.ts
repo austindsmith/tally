@@ -1,4 +1,5 @@
 export async function getSheetNames(sheetId: string) {
+  // Add dropdown field to let user select which sheet to use
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`;
   const options = {
     method: "GET",
@@ -14,7 +15,6 @@ export async function getSheetNames(sheetId: string) {
 
     for (let sheet in sheets) {
       sheetNames.push(sheets[sheet].properties.title);
-      console.log(sheets[sheet].properties.title);
     }
   } catch (error) {
     console.error(error);
@@ -22,8 +22,6 @@ export async function getSheetNames(sheetId: string) {
   return sheetNames[0];
 }
 export async function readSheet(sheetId: string, sheetName: string) {
-  // Add dropdown field to let user select which sheet to use
-
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}`;
   const options = {
     method: "GET",
@@ -33,10 +31,9 @@ export async function readSheet(sheetId: string, sheetName: string) {
   try {
     const response = await fetch(url, options);
     const data = await response.json();
-    console.log(data);
+    return data.values;
   } catch (error) {
     console.error(error);
+    return;
   }
-
-  return;
 }

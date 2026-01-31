@@ -1,6 +1,6 @@
 import { getSheetId } from "../utils/parseUrl";
 import { getSheetNames, readSheet } from "@/utils/googleSheets";
-import { googleSheetUrl } from "@/utils/storage";
+import { googleSheetUrl, sheetData } from "@/utils/storage";
 
 export default defineBackground(() => {
   browser.runtime.onMessage.addListener(async (message) => {
@@ -8,27 +8,12 @@ export default defineBackground(() => {
       const url = await googleSheetUrl.getValue();
       const sheetId = getSheetId(url);
       const sheetNames = await getSheetNames(sheetId);
-      const data = await readSheet(sheetId, sheetNames);
+      const values = await readSheet(sheetId, sheetNames);
+      await sheetData.setValue(values);
+      return;
     }
     if (message.type === "AUTHENTICATE") {
       return;
     }
   });
 });
-
-async function fetchSheetData(url: string) {
-  try {
-    const response = await fetch(url);
-    console.log("Response status:", response.status);
-    const csvText = await response.text();
-
-    const rows = csvText
-      .split("\n")
-      .map((row) => row.split(",").map((cell) => cell.replace(/^"|"$/g, "")));
-
-    console.log("Parsed rows:", rows);
-    return rows;
-  } catch (error) {
-    console.error("Fetch error:", error);
-  }
-}
