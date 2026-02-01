@@ -1,7 +1,16 @@
-export default function Dock() {
+type DockProps = {
+  view: string;
+  onChange: (view: string) => void;
+};
+export default function Dock({ view, onChange }: DockProps) {
+  useEffect(() => {}, []);
+
   return (
     <div className="dock">
-      <button onClick={() => setCurrentScreen("login")}>
+      <button
+        className={view === "home" ? "dock-active" : ""}
+        onClick={() => onChange("home")}
+      >
         <svg
           className="size-[1.2em]"
           xmlns="http://www.w3.org/2000/svg"
@@ -39,7 +48,10 @@ export default function Dock() {
         <span className="dock-label">Home</span>
       </button>
 
-      <button className="dock-active">
+      <button
+        className={view === "preview" ? "dock-active" : ""}
+        onClick={() => onChange("preview")}
+      >
         <svg
           className="size-[1.2em]"
           xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +83,10 @@ export default function Dock() {
         <span className="dock-label">Preview</span>
       </button>
 
-      <button onClick={() => setCurrentScreen("settings")}>
+      <button
+        className={view === "settings" ? "dock-active" : ""}
+        onClick={() => onChange("settings")}
+      >
         <svg
           className="size-[1.2em]"
           xmlns="http://www.w3.org/2000/svg"

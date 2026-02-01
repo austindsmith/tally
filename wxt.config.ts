@@ -31,4 +31,5 @@ export default defineConfig({
     "wxt-module-console-forward",
   ],
   debug: true,
+  srcDir: "src",
 });

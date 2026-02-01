@@ -1,8 +1,9 @@
 html,
-body {
+body,
+#root {
   margin: 0;
   width: 380px;
-  min-height: 280px;
+  height: 280px;
   background: transparent;
 }
 
