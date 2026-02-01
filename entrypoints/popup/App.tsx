@@ -3,8 +3,9 @@ import "./App.css";
 import { googleSheetUrl, sheetData } from "@/utils/storage";
 import { getAuthToken } from "@/utils/auth";
 import { useEffect } from "react";
+import Settings from "./views/Settings";
 
-type Screen = "login" | "dashboard" | "table";
+type Screen = "login" | "dashboard" | "table" | "settings";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("login");
@@ -356,7 +357,7 @@ function App() {
             <span className="dock-label">Preview</span>
           </button>
 
-          <button>
+          <button onClick={() => setCurrentScreen("settings")}>
             <svg
               className="size-[1.2em]"
               xmlns="http://www.w3.org/2000/svg"
@@ -392,6 +393,9 @@ function App() {
         </div>
       </>
     );
+  }
+  if (currentScreen === "settings") {
+    return Settings();
   }
 
   return (
