@@ -1,24 +1,31 @@
-import { googleSheetUrl, sheetData, currentView } from "@/utils/storage";
-import { google } from "googleapis";
+import { googleSheetUrl, sheetData } from "@/utils/storage";
 import { getSheetId } from "@/utils/parseUrl";
 import { getSheetNames } from "@/utils/googleSheets";
 
-type SettingsProps = {
-  url: string;
-};
-
 export default function Settings() {
   const [localUrl, setLocalUrl] = useState("");
+  const [localSheetNames, setLocalSheetNames] = useState([""]);
   const [localSheetData, setLocalSheetData] = useState([""]);
+
+  const handleSelect = async () => {
+    const sheetData = await readSheet();
+  };
 
   useEffect(() => {
     googleSheetUrl.getValue().then(setLocalUrl);
-    sheetData.getValue().then(setLocalSheetData);
-  }, []);
+    const fetchSheetNames = async () => {
+      const sheetId = getSheetId(localUrl);
+      if (sheetId) {
+        const names = await getSheetNames(sheetId);
+        setLocalSheetNames(names);
+      }
+    };
+    fetchSheetNames();
+    console.log(sheetData);
+  }, [localUrl]);
 
   const localSheetId = getSheetId(localUrl);
   console.log(localSheetId);
-  const localSheetNames = getSheetNames(localSheetId);
   const handleChange = async (newUrl: string) => {
     setLocalUrl(newUrl);
     await googleSheetUrl.setValue(newUrl);
@@ -62,9 +69,9 @@ export default function Settings() {
               <legend className="fieldset-legend">Sheets</legend>
               <select defaultValue="Pick a sheet" className="select">
                 <option disabled={true}>Pick a sheet</option>
-                <option>{localSheetNames}</option>
-                <option>FireFox</option>
-                <option>Safari</option>
+                {localSheetNames.map((name) => (
+                  <option>{name}</option>
+                ))}
               </select>
             </fieldset>
           </div>

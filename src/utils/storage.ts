@@ -1,9 +1,5 @@
 import { storage } from "#imports";
 
-export const currentView = storage.defineItem<string>("local:currentView", {
-  fallback: "login",
-});
-
 export const googleSheetUrl = storage.defineItem<string>(
   "local:googleSheetUrl",
   {

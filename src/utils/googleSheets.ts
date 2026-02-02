@@ -19,7 +19,7 @@ export async function getSheetNames(sheetId: string) {
   } catch (error) {
     console.error(error);
   }
-  return sheetNames[0];
+  return sheetNames;
 }
 export async function readSheet(sheetId: string, sheetName: string) {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}`;
