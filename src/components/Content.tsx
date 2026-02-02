@@ -1,7 +1,6 @@
 import Home from "@/entrypoints/popup/views/Home";
 import Preview from "@/entrypoints/popup/views/Preview";
 import Settings from "@/entrypoints/popup/views/Settings";
-import { googleSheetUrl } from "#imports";
 
 type ContentProps = {
   view: string;

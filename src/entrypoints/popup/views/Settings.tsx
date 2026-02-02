@@ -1,35 +1,18 @@
 import { googleSheetUrl, sheetData } from "@/utils/storage";
 import { getSheetId } from "@/utils/parseUrl";
 import { getSheetNames } from "@/utils/googleSheets";
+import { useGoogleSheet } from "@/store/useGoogleSheet";
 
 export default function Settings() {
-  const [localUrl, setLocalUrl] = useState("");
-  const [localSheetNames, setLocalSheetNames] = useState([""]);
-  const [localSheetData, setLocalSheetData] = useState([""]);
+  const setSheetUrl = useGoogleSheet((state) => state.setSheetUrl);
+  const sheetId = useGoogleSheet((state) => state.id);
+  const sheetUrl = useGoogleSheet((state) => state.url);
+  const sheets = useGoogleSheet((state) => state.sheets);
 
-  const handleSelect = async () => {
-    const sheetData = await readSheet();
-  };
+  const handleSelect = async (sheetName: string) => {};
 
-  useEffect(() => {
-    googleSheetUrl.getValue().then(setLocalUrl);
-    const fetchSheetNames = async () => {
-      const sheetId = getSheetId(localUrl);
-      if (sheetId) {
-        const names = await getSheetNames(sheetId);
-        setLocalSheetNames(names);
-      }
-    };
-    fetchSheetNames();
-    console.log(sheetData);
-  }, [localUrl]);
+  useEffect(() => {}, []);
 
-  const localSheetId = getSheetId(localUrl);
-  console.log(localSheetId);
-  const handleChange = async (newUrl: string) => {
-    setLocalUrl(newUrl);
-    await googleSheetUrl.setValue(newUrl);
-  };
   return (
     <div className="w-96 min-h-80 p-4 bg-base-200">
       <div className="card-body">
@@ -57,9 +40,9 @@ export default function Settings() {
                 type="text"
                 className="input focus:outline-none"
                 placeholder="Sheet url"
-                value={localUrl}
+                value={sheetUrl}
                 onChange={(e) => {
-                  handleChange(e.target.value);
+                  setSheetUrl(e.target.value);
                 }}
               />
             </label>
@@ -67,10 +50,18 @@ export default function Settings() {
           <div>
             <fieldset className="fieldset">
               <legend className="fieldset-legend">Sheets</legend>
-              <select defaultValue="Pick a sheet" className="select">
+              <select
+                onChange={(e) => {
+                  handleSelect(e.target.value);
+                }}
+                defaultValue="Pick a sheet"
+                className="select"
+              >
                 <option disabled={true}>Pick a sheet</option>
-                {localSheetNames.map((name) => (
-                  <option>{name}</option>
+                {sheets.map((name) => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
                 ))}
               </select>
             </fieldset>
