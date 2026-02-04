@@ -30,10 +30,20 @@ export async function readSheet(sheetId: string, sheetName: string) {
 
   try {
     const response = await fetch(url, options);
+
+    if (!response.ok) {
+      console.error("API Error:", response.status, response.statusText);
+      const errorData = await response.json();
+      console.error("Error details:", errorData);
+      return [];
+    }
+
     const data = await response.json();
-    return data.values;
+    console.log("Full response:", data);
+    console.log("Values:", data.values);
+    return data.values || [];
   } catch (error) {
     console.error(error);
-    return;
+    return [];
   }
 }

@@ -8,8 +8,12 @@ export default function Settings() {
   const sheetId = useGoogleSheet((state) => state.id);
   const sheetUrl = useGoogleSheet((state) => state.url);
   const sheets = useGoogleSheet((state) => state.sheets);
+  const selectedSheet = useGoogleSheet((state) => state.selectedSheet);
+  const setSelectedSheet = useGoogleSheet((state) => state.setSelectedSheet);
 
-  const handleSelect = async (sheetName: string) => {};
+  const handleSelect = async (sheetName: string) => {
+    setSelectedSheet(sheetName);
+  };
 
   useEffect(() => {}, []);
 
