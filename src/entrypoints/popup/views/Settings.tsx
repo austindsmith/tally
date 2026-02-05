@@ -65,7 +65,6 @@ export default function Settings() {
                 onChange={(e) => {
                   handleSelect(e.target.value);
                 }}
-                defaultValue="Pick a sheet"
                 className="select"
                 value={selectedSheet || "Pick a sheet"}
               >
