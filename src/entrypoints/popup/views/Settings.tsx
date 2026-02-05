@@ -1,6 +1,5 @@
 import { googleSheetUrl, sheetData } from "@/utils/storage";
-import { getSheetId } from "@/utils/parseUrl";
-import { getSheetNames } from "@/utils/googleSheets";
+import { getSheetNames, getSheetId } from "@/utils/googleSheets";
 import { useGoogleSheet } from "@/store/useGoogleSheet";
 
 export default function Settings() {

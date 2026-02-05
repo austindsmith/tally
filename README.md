@@ -12,6 +12,7 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
 - [danfo.js](https://danfo.jsdata.org/) Like pandas
 - [heroicons](https://heroicons.com/) For svg icons
 - [zustand](https://zustand.docs.pmnd.rs/) State management
+- [lodash](https://lodash.com/docs/4.17.23) Simpler data manipulation
 
 #### Documentation
 

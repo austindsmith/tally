@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
+import _ from "lodash";
 import { getSheetId } from "@/utils/googleSheets";
 
 type GoogleSheetStore = {
@@ -9,9 +9,11 @@ type GoogleSheetStore = {
   sheets: string[];
   selectedSheet: string;
   data: any[];
+  dataObjects: Record<string, any>;
   loading: boolean;
   setSheetUrl: (url: string) => void;
   setSelectedSheet: (name: string) => void;
+  setDataObject: (data: any[]) => void;
   initFromDefault: () => void;
 };
 
@@ -23,6 +25,7 @@ export const useGoogleSheet = create<GoogleSheetStore>()(
       sheets: [],
       selectedSheet: "",
       data: [],
+      dataObjects: {},
       loading: false,
       setSheetUrl: async (url) => {
         const id = getSheetId(url);
@@ -36,6 +39,14 @@ export const useGoogleSheet = create<GoogleSheetStore>()(
 
         const data = await readSheet(id, name);
         set({ data });
+      },
+      setDataObject: async (arrayData) => {
+        const [headers, ...rows] = arrayData;
+        const objects = _.zipObject(headers, rows);
+
+        //TODO: Make this return an array of objects rather than a column key and array value
+        set({ dataObjects: objects });
+        console.log(objects);
       },
       initFromDefault: async () => {
         const { url, selectedSheet } = get();
@@ -52,6 +63,7 @@ export const useGoogleSheet = create<GoogleSheetStore>()(
         if (selectedSheet && sheets.includes(selectedSheet)) {
           const data = await readSheet(id, selectedSheet);
           set({ data });
+          console.log(data);
         }
       },
     }),

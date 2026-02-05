@@ -28,3 +28,4 @@ stats-*.json
 .chrome-profile*
 .env
 credentials*
+quokka.ts
