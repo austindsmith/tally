@@ -1,3 +1,9 @@
+export function getSheetId(url: string) {
+  const match = url.match(/\/d\/(.+?)\//)?.[1];
+
+  return match || "";
+}
+
 export async function getSheetNames(sheetId: string) {
   // Add dropdown field to let user select which sheet to use
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`;
@@ -39,8 +45,6 @@ export async function readSheet(sheetId: string, sheetName: string) {
     }
 
     const data = await response.json();
-    console.log("Full response:", data);
-    console.log("Values:", data.values);
     return data.values || [];
   } catch (error) {
     console.error(error);

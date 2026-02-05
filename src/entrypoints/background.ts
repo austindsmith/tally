@@ -1,4 +1,4 @@
-import { getSheetId } from "../utils/parseUrl";
+import { getSheetId } from "../utils/googleSheets";
 import { getSheetNames, readSheet } from "@/utils/googleSheets";
 import { googleSheetUrl, sheetData } from "@/utils/storage";
 

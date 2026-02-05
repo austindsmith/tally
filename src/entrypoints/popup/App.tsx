@@ -1,14 +1,12 @@
 import { useState } from "react";
-import "./App.css";
-import { googleSheetUrl, sheetData, currentView } from "@/utils/storage";
-import { getAuthToken } from "@/utils/auth";
-import { useEffect } from "react";
-import Dock from "@/components/Dock";
-import Content from "@/components/Content";
+import { useGoogleSheet } from "@/store/useGoogleSheet";
 
 function App() {
+  const init = useGoogleSheet((state) => state.initFromDefault);
   const [view, setView] = useState<string>("login");
-  useEffect(() => {}, []);
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <>

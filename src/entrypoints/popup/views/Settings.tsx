@@ -15,7 +15,14 @@ export default function Settings() {
     setSelectedSheet(sheetName);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (sheetUrl) {
+      setSheetUrl(sheetUrl);
+    }
+    if (selectedSheet) {
+      setSelectedSheet(selectedSheet);
+    }
+  }, [sheetUrl, selectedSheet]);
 
   return (
     <div className="w-96 min-h-80 p-4 bg-base-200">
@@ -60,6 +67,7 @@ export default function Settings() {
                 }}
                 defaultValue="Pick a sheet"
                 className="select"
+                value={selectedSheet || "Pick a sheet"}
               >
                 <option disabled={true}>Pick a sheet</option>
                 {sheets.map((name) => (
