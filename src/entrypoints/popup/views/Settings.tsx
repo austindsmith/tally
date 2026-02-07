@@ -76,6 +76,7 @@ export default function Settings() {
               </select>
             </fieldset>
           </div>
+          <div></div>
           <div>
             <button className="btn bg-white text-black border-[#e5e5e5]">
               <svg

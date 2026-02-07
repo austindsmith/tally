@@ -1,43 +1,30 @@
 import { useGoogleSheet } from "@/store/useGoogleSheet";
-import { useEffect, useEffectEvent } from "react";
 
 export default function Preview() {
   const data = useGoogleSheet((state) => state.data);
+  const [headers, ...rows] = data;
 
   if (data) {
     return (
-      <div className="w-96 min-h-80 p-4 card overflow x-auto">
+      <div className="w-200 min-h-80 p-4 card overflow x-auto">
         <table className="table table-xs">
           {/* head */}
           <thead>
             <tr>
-              {data[0].map((col: string) => (
+              {headers.map((col: string) => (
                 <td key={col}>{col}</td>
               ))}
             </tr>
           </thead>
           <tbody>
             {/* row 1 */}
-            <tr>
-              <th>1</th>
-              <td>Cy Ganderton</td>
-              <td>Quality Control Specialist</td>
-              <td>Blue</td>
-            </tr>
-            {/* row 2 */}
-            <tr className="hover:bg-base-300">
-              <th>2</th>
-              <td>Hart Hagerty</td>
-              <td>Desktop Support Technician</td>
-              <td>Purple</td>
-            </tr>
-            {/* row 3 */}
-            <tr>
-              <th>3</th>
-              <td>Brice Swyre</td>
-              <td>Tax Accountant</td>
-              <td>Red</td>
-            </tr>
+            {rows.map((row: string[]) => (
+              <tr>
+                {row.map((col: string) => (
+                  <td key={col}>{col}</td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

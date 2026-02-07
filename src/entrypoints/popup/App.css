@@ -3,8 +3,9 @@ body,
 #root {
   margin: 0;
   width: 380px;
-  height: 380px;
+  height: auto;
   background: transparent;
+  transition: height 02s ease;
 }
 
 body {
