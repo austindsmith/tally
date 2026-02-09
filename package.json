@@ -17,6 +17,7 @@
   "dependencies": {
     "@formkit/auto-animate": "^0.9.0",
     "@react-oauth/google": "^0.13.4",
+    "@tanstack/react-table": "^8.21.3",
     "google-apis": "^1.0.0",
     "google-auth-library": "^10.5.0",
     "google-spreadsheet": "^5.0.2",
