@@ -46,7 +46,6 @@ export const useGoogleSheet = create<GoogleSheetStore>()(
 
         //TODO: Make this return an array of objects rather than a column key and array value
         set({ dataObjects: objects });
-        console.log(objects);
       },
       initFromDefault: async () => {
         const { url, selectedSheet } = get();
@@ -63,7 +62,6 @@ export const useGoogleSheet = create<GoogleSheetStore>()(
         if (selectedSheet && sheets.includes(selectedSheet)) {
           const data = await readSheet(id, selectedSheet);
           set({ data });
-          console.log(data);
         }
       },
     }),

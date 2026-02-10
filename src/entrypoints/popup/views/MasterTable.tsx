@@ -6,7 +6,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 
-// Make a conversion temporarily to map like the below:
+// TODO: Make a conversion temporarily to map like the below:
 // const data = [{ id: 1, name: "Ada" }];
 // const columns = [{ accessorKey: "name", header: "Name" }];
 type ColumnSort = {
@@ -33,6 +33,7 @@ export default function MasterTable() {
     state: { sorting },
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
+    manualFiltering: true,
   });
 
   if (data) {

@@ -1,6 +1,7 @@
 import Home from "@/entrypoints/popup/views/Home";
 import MasterTable from "@/entrypoints/popup/views/MasterTable";
 import Preview from "@/entrypoints/popup/views/Preview";
+import Selector from "@/entrypoints/popup/views/Selector";
 import Settings from "@/entrypoints/popup/views/Settings";
 
 type ContentProps = {
@@ -11,8 +12,8 @@ export default function Content({ view, onChange }: ContentProps) {
   switch (view) {
     case "home":
       return <Home />;
-    case "preview":
-      return <Preview></Preview>;
+    case "selector":
+      return <Selector></Selector>;
     case "masterTable":
       return <MasterTable></MasterTable>;
     case "settings":
