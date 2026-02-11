@@ -23,8 +23,8 @@ export default function Selector() {
       <div className="flex items-center justify-center px-6 py-4">
         <img src={tallyLogo} className="h-20" />
       </div>
+      <div className="badge badge-accent">{selector}</div>
       <div className="flex items-center justify-center gap-3">
-        <h1>{selector}</h1>
         <button className="btn btn-success" onClick={startPicker}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
