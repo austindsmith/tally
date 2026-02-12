@@ -17,7 +17,7 @@ export default function Selector() {
     setSelector(response.selector);
     return;
   };
-  //TODO: cleaner method of displaying selector than h1
+  //TODO: cleaner method of displaying selector than badge
   return (
     <div className="w-96 min-h-80 p-4 bg-base-200">
       <div className="flex items-center justify-center px-6 py-4">
