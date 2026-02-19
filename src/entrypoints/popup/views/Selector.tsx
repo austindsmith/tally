@@ -67,6 +67,7 @@ export default function Selector() {
                     </code>
                     <button
                       onClick={(e) => {
+                        e.stopPropagation();
                         startPicker();
                       }}
                       className="btn btn-sm btn-primary"

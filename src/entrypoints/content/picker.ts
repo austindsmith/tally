@@ -22,6 +22,12 @@ export default function startPicker(): Promise<string> {
         callback: (target: HTMLElement) => {
           const selector = finder(target);
           resolve(selector);
+
+          if (picker) {
+            picker.actions = {};
+            picker?.hoverBox?.remove();
+          }
+
           picker = null;
         },
       },
