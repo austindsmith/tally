@@ -32,6 +32,11 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
   - Then they click the corresponding form field to fill in.
   - Both then set the selectors that the application will use for determining how to fill in the form (so it's dynamic)
 
+- Profiles
+  - Let the user save configs for multiple websites so they don't need to redo every time.
+  - Since authing with Google already, maybe these can be backed up to Google Drive in case of computer switch or otherwise.
+  - Configurable backups for configurations.
+
 #### Notes
 
 - Call functions in `utils` from background.ts using `message.type ===` and then `const var = await functionFromUtils()`
@@ -42,3 +47,8 @@ Tally is (going to be) a Chrome extension for my wife. It's a general data entry
 
 ![alt text](mockups/selector-screen1.png)
 ![alt text](mockups/selector-screen2.png)
+![alt text](mockups/settings1.png)
+![alt text](mockups/settings2.png)
+![alt text](mockups/home1.png)
+![alt text](mockups/table1.png)
+![alt text](mockups/fields1.png)
