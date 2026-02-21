@@ -6,6 +6,8 @@ import { getSheetId } from "@/utils/googleSheets";
 type SelectorStore = {
   selector: string;
   setSelector: (selector: string) => void;
+  startPick: () => Promise<void>;
+  checkForPick: () => Promise<void>;
 };
 
 export const useSelectors = create<SelectorStore>()(
@@ -13,8 +15,26 @@ export const useSelectors = create<SelectorStore>()(
     (set, get) => ({
       selector: "",
 
-      setSelector: async (selector) => {
-        set(() => ({ selector: selector }));
+      setSelector: (selector) => set({ selector }),
+
+      startPick: async () => {
+        const [tab] = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        if (!tab?.id) return;
+        await browser.tabs.sendMessage(tab.id, { type: "start-picker" });
+        window.close();
+      },
+
+      checkForPick: async () => {
+        const { pickedSelector } =
+          await browser.storage.local.get("pickedSelector");
+        if (pickedSelector) {
+          console.log(pickedSelector);
+          await browser.storage.local.remove("pickedSelector");
+          set({ selector: pickedSelector as string });
+        }
       },
     }),
     {

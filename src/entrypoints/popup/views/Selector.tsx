@@ -6,20 +6,13 @@ export default function Selector() {
   const [expanded, setExpanded] = useState(false);
 
   const selector = useSelectors((state) => state.selector);
-  const setSelector = useSelectors((state) => state.setSelector);
-  const startPicker = async () => {
-    const [tab] = await browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-    if (!tab.id) return;
-    const response = await browser.tabs.sendMessage(tab.id, {
-      action: "startPicker",
-    });
-    console.log(`Selector: ${response.selector}`);
-    setSelector(response.selector);
-    return;
-  };
+  const startPick = useSelectors((state) => state.startPick);
+  const checkForPick = useSelectors((state) => state.checkForPick);
+
+  useEffect(() => {
+    checkForPick();
+  }, []);
+
   return (
     <div className="w-96 min-h-80 p-4 bg-base-200">
       <div className="flex flex-col h-full">
@@ -68,7 +61,7 @@ export default function Selector() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        startPicker();
+                        startPick();
                       }}
                       className="btn btn-sm btn-primary"
                     >
@@ -77,13 +70,13 @@ export default function Selector() {
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke-width="1.5"
+                        strokeWidth="1.5"
                         stroke="currentColor"
                         className="size-4"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           d="M15.042 21.672 13.684 16.6m0 0-2.51 2.225.569-9.47 5.227 7.917-3.286-.672ZM12 2.25V4.5m5.834.166-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243-1.59-1.59"
                         />
                       </svg>
@@ -107,7 +100,7 @@ export default function Selector() {
           </div>
         </div>
         <div className="flex items-center justify-center gap-3">
-          <button className="btn btn-success" onClick={startPicker}>
+          <button className="btn btn-success" onClick={startPick}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

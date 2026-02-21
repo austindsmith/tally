@@ -3,34 +3,29 @@ import { finder } from "@medv/finder";
 
 let picker: ElementPicker | null = null;
 
-export default function startPicker(): Promise<string> {
-  return new Promise<string>((resolve) => {
-    if (picker) {
-      resolve("");
-      return;
-    }
+export default function startPicker() {
+  if (picker) return;
 
-    picker = new ElementPicker({
-      container: document.body,
-      selectors: "*",
-      background: "rgba(153, 235, 255, 0.5)",
-      borderWidth: 5,
-      transition: "all 150ms ease",
-      ignoreElements: [document.body],
-      action: {
-        trigger: "click",
-        callback: (target: HTMLElement) => {
-          const selector = finder(target);
-          resolve(selector);
+  picker = new ElementPicker({
+    container: document.body,
+    selectors: "*",
+    background: "rgba(153, 235, 255, 0.5)",
+    borderWidth: 5,
+    transition: "all 150ms ease",
+    ignoreElements: [document.body],
+    action: {
+      trigger: "click",
+      callback: (target: HTMLElement) => {
+        const selector = finder(target);
+        browser.storage.local.set({ pickedSelector: selector });
+        browser.runtime.sendMessage({ type: "element-picked", selector });
+        if (picker) {
+          picker.actions = {};
+          picker?.hoverBox?.remove();
+        }
 
-          if (picker) {
-            picker.actions = {};
-            picker?.hoverBox?.remove();
-          }
-
-          picker = null;
-        },
+        picker = null;
       },
-    });
+    },
   });
 }
