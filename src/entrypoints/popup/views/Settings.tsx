@@ -15,13 +15,11 @@ export default function Settings() {
   };
 
   useEffect(() => {
-    if (sheetUrl) {
-      setSheetUrl(sheetUrl);
+    const store = useGoogleSheet.getState();
+    if (store.url && !store.sheets.length) {
+      store.setSheetUrl(store.url);
     }
-    if (selectedSheet) {
-      setSelectedSheet(selectedSheet);
-    }
-  }, [sheetUrl, selectedSheet]);
+  }, []);
 
   return (
     <div className="w-96 min-h-80 p-4 bg-base-200">

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Batch Grade Entry</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f3f4f6;
+        padding: 32px;
+      }
+      .container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        padding: 32px;
+        max-width: 820px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      .subtitle {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 24px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 8px 12px;
+        border-bottom: 2px solid #e5e7eb;
+      }
+      td {
+        padding: 6px 12px;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+      }
+      tr:hover {
+        background: #f9fafb;
+      }
+      .student-name {
+        font-weight: 500;
+        font-size: 14px;
+        color: #111827;
+        white-space: nowrap;
+      }
+      .student-id {
+        font-size: 12px;
+        color: #9ca3af;
+        font-family: monospace;
+      }
+      input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+      input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+      .grade-input {
+        max-width: 100px;
+      }
+      .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      }
+      button {
+        padding: 10px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 500;
+        background: #3b82f6;
+        color: white;
+      }
+      button:hover {
+        background: #2563eb;
+      }
+      .counter {
+        color: #9ca3af;
+        font-size: 13px;
+      }
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #065f46;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Batch Grade Entry</h1>
+      <p class="subtitle">Spring 2025 - Period 3 - English</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student Name</th>
+            <th>Student ID</th>
+            <th>Grade</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody id="student-rows"></tbody>
+      </table>
+
+      <div class="actions">
+        <span class="counter" id="counter">0 / 0 filled</span>
+        <button onclick="submitAll()">Submit All Grades</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const students = [
+        { name: "Anderson, James", id: "STU-1041" },
+        { name: "Chen, Emily", id: "STU-1042" },
+        { name: "Davis, Marcus", id: "STU-1043" },
+        { name: "Garcia, Sofia", id: "STU-1044" },
+        { name: "Johnson, Tyler", id: "STU-1045" },
+        { name: "Kim, Hannah", id: "STU-1046" },
+        { name: "Martinez, Diego", id: "STU-1047" },
+        { name: "Nguyen, Lily", id: "STU-1048" },
+        { name: "Patel, Aiden", id: "STU-1049" },
+        { name: "Robinson, Maya", id: "STU-1050" },
+        { name: "Smith, Olivia", id: "STU-1051" },
+        { name: "Thompson, Ethan", id: "STU-1052" },
+        { name: "Williams, Zoe", id: "STU-1053" },
+        { name: "Wright, Noah", id: "STU-1054" },
+        { name: "Young, Chloe", id: "STU-1055" },
+        { name: "Baker, Liam", id: "STU-1056" },
+        { name: "Clark, Ava", id: "STU-1057" },
+        { name: "Evans, Jackson", id: "STU-1058" },
+        { name: "Foster, Isabella", id: "STU-1059" },
+        { name: "Green, Lucas", id: "STU-1060" },
+        { name: "Hall, Mia", id: "STU-1061" },
+        { name: "Irwin, Caleb", id: "STU-1062" },
+        { name: "Jones, Aria", id: "STU-1063" },
+        { name: "King, Benjamin", id: "STU-1064" },
+        { name: "Lopez, Scarlett", id: "STU-1065" },
+      ];
+
+      const tbody = document.getElementById("student-rows");
+
+      students.forEach((s, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+        <td style="color: #9ca3af; font-size: 12px;">${i + 1}</td>
+        <td><span class="student-name">${s.name}</span></td>
+        <td><span class="student-id">${s.id}</span></td>
+        <td><input type="text" class="grade-input" data-row="${i}" data-field="grade" placeholder="--" oninput="updateCounter()"></td>
+        <td><input type="text" data-row="${i}" data-field="comments" placeholder="Optional"></td>
+      `;
+        tbody.appendChild(tr);
+      });
+
+      function updateCounter() {
+        const filled = document.querySelectorAll(".grade-input");
+        let count = 0;
+        filled.forEach((input) => {
+          if (input.value.trim()) count++;
+        });
+        document.getElementById("counter").textContent =
+          count + " / " + students.length + " filled";
+      }
+
+      function submitAll() {
+        const inputs = document.querySelectorAll(".grade-input");
+        let empty = 0;
+        inputs.forEach((input) => {
+          if (!input.value.trim()) empty++;
+        });
+
+        if (empty > 0) {
+          showToast(empty + " student(s) still missing grades");
+          return;
+        }
+
+        showToast("All " + students.length + " grades submitted");
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2000);
+      }
+
+      updateCounter();
+    </script>
+  </body>
+</html>

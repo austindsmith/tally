@@ -29,8 +29,9 @@ export const useGoogleSheet = create<GoogleSheetStore>()(
       loading: false,
       setSheetUrl: async (url) => {
         const id = getSheetId(url);
+        set({ url, id, selectedSheet: "", data: [], dataObjects: {} });
         const sheets = await getSheetNames(id);
-        set({ url, id, sheets });
+        set({ sheets });
       },
       setSelectedSheet: async (name) => {
         set(() => ({ selectedSheet: name }));

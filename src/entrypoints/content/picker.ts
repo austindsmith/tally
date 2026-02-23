@@ -2,9 +2,19 @@ import ElementPicker from "html-element-picker";
 import { finder } from "@medv/finder";
 
 let picker: ElementPicker | null = null;
+let pickingFor: string | null = null;
 
-export default function startPicker() {
-  if (picker) return;
+function cleanup() {
+  if (picker) {
+    picker.actions = {};
+    picker?.hoverBox?.remove();
+    picker = null;
+  }
+}
+
+export default function startPicker(column: string) {
+  cleanup();
+  pickingFor = column;
 
   picker = new ElementPicker({
     container: document.body,
@@ -16,15 +26,23 @@ export default function startPicker() {
     action: {
       trigger: "click",
       callback: (target: HTMLElement) => {
-        const selector = finder(target);
-        browser.storage.local.set({ pickedSelector: selector });
-        browser.runtime.sendMessage({ type: "element-picked", selector });
-        if (picker) {
-          picker.actions = {};
-          picker?.hoverBox?.remove();
-        }
+        if (!pickingFor) return;
 
-        picker = null;
+        const column = pickingFor;
+        pickingFor = null;
+
+        const selector = finder(target);
+        const preview =
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLSelectElement
+            ? target.value
+            : (target.textContent?.trim() ?? "");
+
+        browser.storage.local.set({
+          pickResult: { column, selector, preview },
+        });
+
+        cleanup();
       },
     },
   });

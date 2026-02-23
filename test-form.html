@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Grading Portal</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f3f4f6;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        padding: 32px;
+        width: 420px;
+      }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      .subtitle {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 24px;
+      }
+      .field {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      select:focus,
+      input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+      }
+      .nav {
+        display: flex;
+        gap: 8px;
+        margin-top: 24px;
+      }
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+      .btn-prev,
+      .btn-next {
+        background: #e5e7eb;
+        color: #374151;
+      }
+      .btn-prev:hover,
+      .btn-next:hover {
+        background: #d1d5db;
+      }
+      .btn-submit {
+        background: #3b82f6;
+        color: white;
+        flex: 1;
+      }
+      .btn-submit:hover {
+        background: #2563eb;
+      }
+      .btn-submit:disabled {
+        background: #93c5fd;
+        cursor: not-allowed;
+      }
+      .counter {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 12px;
+        margin-top: 12px;
+      }
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #065f46;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Student Grade Entry</h1>
+      <p class="subtitle">Spring 2025 - Period 3 - English</p>
+
+      <div class="field">
+        <label for="student-name">Student Name</label>
+        <select id="student-name"></select>
+      </div>
+
+      <div class="field">
+        <label for="student-id">Student ID</label>
+        <input
+          type="text"
+          id="student-id"
+          readonly
+          tabindex="-1"
+          style="background: #f9fafb; color: #6b7280"
+        />
+      </div>
+
+      <div class="field">
+        <label for="grade">Grade</label>
+        <input
+          type="text"
+          id="grade"
+          placeholder="Enter grade (e.g. 85, A-, B+)"
+        />
+      </div>
+
+      <div class="field">
+        <label for="comments">Comments</label>
+        <input type="text" id="comments" placeholder="Optional comments" />
+      </div>
+
+      <div class="nav">
+        <button class="btn-prev" onclick="navigate(-1)">Prev</button>
+        <button class="btn-submit" id="submit-btn" onclick="submitGrade()">
+          Submit Grade
+        </button>
+        <button class="btn-next" onclick="navigate(1)">Next</button>
+      </div>
+
+      <div class="counter" id="counter"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const students = [
+        { name: "Anderson, James", id: "STU-1041" },
+        { name: "Chen, Emily", id: "STU-1042" },
+        { name: "Davis, Marcus", id: "STU-1043" },
+        { name: "Garcia, Sofia", id: "STU-1044" },
+        { name: "Johnson, Tyler", id: "STU-1045" },
+        { name: "Kim, Hannah", id: "STU-1046" },
+        { name: "Martinez, Diego", id: "STU-1047" },
+        { name: "Nguyen, Lily", id: "STU-1048" },
+        { name: "Patel, Aiden", id: "STU-1049" },
+        { name: "Robinson, Maya", id: "STU-1050" },
+        { name: "Smith, Olivia", id: "STU-1051" },
+        { name: "Thompson, Ethan", id: "STU-1052" },
+        { name: "Williams, Zoe", id: "STU-1053" },
+        { name: "Wright, Noah", id: "STU-1054" },
+        { name: "Young, Chloe", id: "STU-1055" },
+      ];
+
+      const grades = {};
+      const nameSelect = document.getElementById("student-name");
+      const idInput = document.getElementById("student-id");
+      const gradeInput = document.getElementById("grade");
+      const commentsInput = document.getElementById("comments");
+
+      students.forEach((s, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = s.name;
+        nameSelect.appendChild(opt);
+      });
+
+      nameSelect.addEventListener("change", () => loadStudent());
+
+      function loadStudent() {
+        const i = parseInt(nameSelect.value);
+        const student = students[i];
+        idInput.value = student.id;
+        gradeInput.value = grades[i]?.grade || "";
+        commentsInput.value = grades[i]?.comments || "";
+        updateCounter();
+      }
+
+      function navigate(dir) {
+        const next = parseInt(nameSelect.value) + dir;
+        if (next >= 0 && next < students.length) {
+          nameSelect.value = next;
+          nameSelect.dispatchEvent(new Event("change"));
+        }
+      }
+
+      function submitGrade() {
+        const i = parseInt(nameSelect.value);
+        if (!gradeInput.value.trim()) return;
+        grades[i] = {
+          grade: gradeInput.value.trim(),
+          comments: commentsInput.value.trim(),
+        };
+        showToast(
+          "Saved: " + students[i].name + " - " + gradeInput.value.trim(),
+        );
+        updateCounter();
+        setTimeout(() => navigate(1), 400);
+      }
+
+      function updateCounter() {
+        const done = Object.keys(grades).length;
+        document.getElementById("counter").textContent =
+          done + " / " + students.length + " graded";
+      }
+
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2000);
+      }
+
+      loadStudent();
+    </script>
+  </body>
+</html>

@@ -1,30 +1,39 @@
-import tallyLogo from "../../../assets/text-logo.png";
+// Selector.tsx
 import { useSelectors } from "@/store/useSelectors";
 import { useGoogleSheet } from "@/store/useGoogleSheet";
 
 export default function Selector() {
-  // This is temporary, just testing expansion
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const selectors = useSelectors((state) => state.selector);
+  const fields = useSelectors((state) => state.fields);
+  const hidden = useSelectors((state) => state.hidden);
   const startPick = useSelectors((state) => state.startPick);
+  const setRole = useSelectors((state) => state.setRole);
+  const hideColumn = useSelectors((state) => state.hideColumn);
+  const showColumn = useSelectors((state) => state.showColumn);
   const checkForPick = useSelectors((state) => state.checkForPick);
 
   const data = useGoogleSheet((state) => state.data);
   const columns = data[0] ?? [];
+
+  const visibleColumns = columns.filter((col: string) => !hidden.includes(col));
+  const hiddenColumns = columns.filter((col: string) => hidden.includes(col));
+
+  const hasMatch = Object.values(fields).some((f) => f?.role === "match");
 
   useEffect(() => {
     checkForPick();
   }, []);
 
   return (
-    <div className="w-96 min-h-80 p-4 bg-base-200">
+    <div className="w-96 h-[500px] p-4 bg-base-200 flex flex-col overflow-y-auto">
       <div className="flex flex-col h-full">
         <h1>Field Mappings</h1>
-        <div className="flex-1 p-3 overflow-auto space-y-2">
-          {columns.map((column: string) => {
+        <div className="flex-1 p-3 overflow-y-auto max-h-80 space-y-2">
+          {visibleColumns.map((column: string) => {
             const isExpanded = expanded === column;
-            const selector = selectors[column];
+            const field = fields[column];
+            const role = field?.role;
 
             return (
               <div
@@ -32,18 +41,25 @@ export default function Selector() {
                 className={`bg-base-100 rounded-xl border transition-all ${isExpanded ? "border-primary shadow-sm" : "border-base-300"}`}
               >
                 <button
-                  onClick={() => setExpanded(!isExpanded ? null : column)}
+                  onClick={() => setExpanded(isExpanded ? null : column)}
                   className="w-full p-3 flex items-center gap-3 text-left"
                 >
-                  <span className="font-medium">{column}</span>
-                  {selector && (
-                    <span className="badge badge-ghost font-mono text-xs">
-                      {selector}
+                  {role && (
+                    <span
+                      className={`badge badge-sm ${role === "match" ? "badge-primary" : "badge-secondary"}`}
+                    >
+                      {role}
+                    </span>
+                  )}
+                  <span className="font-medium flex-1">{column}</span>
+                  {field?.preview && (
+                    <span className="text-xs opacity-60 truncate max-w-32">
+                      {field.preview}
                     </span>
                   )}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`h-4 w-4 opacity-50 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                    className={`h-4 w-4 opacity-50 shrink-0 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -56,79 +72,95 @@ export default function Selector() {
                     />
                   </svg>
                 </button>
+
                 {isExpanded && (
                   <div className="px-3 pb-3 space-y-3 border-t border-base-200">
-                    <div className="pt-3">
+                    <div className="pt-3 flex gap-2">
+                      <button
+                        onClick={() => setRole(column, "match")}
+                        className={`btn btn-sm flex-1 ${role === "match" ? "btn-primary" : "btn-ghost"}`}
+                        disabled={hasMatch && role !== "match"}
+                        title={
+                          hasMatch && role !== "match"
+                            ? "Only one match field allowed"
+                            : ""
+                        }
+                      >
+                        Match
+                      </button>
+                      <button
+                        onClick={() => setRole(column, "fill")}
+                        className={`btn btn-sm flex-1 ${role === "fill" ? "btn-secondary" : "btn-ghost"}`}
+                      >
+                        Fill
+                      </button>
+                    </div>
+
+                    <div>
                       <label className="text-xs opacity-50 uppercase tracking-wide">
                         CSS Selector
                       </label>
                       <div className="mt-1 flex gap-2">
                         <code className="flex-1 text-xs bg-base-200 p-2 rounded font-mono overflow-x-auto">
-                          {selector || "None selected"}
+                          {field?.selector || "None selected"}
                         </code>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            startPick();
+                            startPick(column);
                           }}
                           className="btn btn-sm btn-primary"
                         >
-                          {" "}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="size-4"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15.042 21.672 13.684 16.6m0 0-2.51 2.225.569-9.47 5.227 7.917-3.286-.672ZM12 2.25V4.5m5.834.166-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243-1.59-1.59"
-                            />
-                          </svg>
                           Pick
                         </button>
                       </div>
                     </div>
-                    <div>
-                      <label className="text-xs opacity-50 uppercase tracking-wide">
-                        Sheet Column
-                      </label>
-                      {/* TODO: Make this read from the sheet itself */}
-                      <select className="select select-bordered select-sm w-full mt-1">
-                        <option value="">Select column</option>
-                        <option value="A">A - Student Name</option>
-                      </select>
-                    </div>
+
+                    {field?.preview && (
+                      <div>
+                        <label className="text-xs opacity-50 uppercase tracking-wide">
+                          Detected Value
+                        </label>
+                        <div className="mt-1 bg-base-200 p-2 rounded text-sm">
+                          {field.preview}
+                        </div>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        hideColumn(column);
+                        setExpanded(null);
+                      }}
+                      className="btn btn-ghost btn-xs text-error w-full"
+                    >
+                      Remove field
+                    </button>
                   </div>
                 )}
               </div>
             );
           })}
-
-          <div className="flex items-center justify-between"></div>
         </div>
-      </div>
-      <div className="flex items-center justify-center gap-3">
-        <button className="btn btn-success" onClick={startPick}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m15 11.25 1.5 1.5.75-.75V8.758l2.276-.61a3 3 0 1 0-3.675-3.675l-.61 2.277H12l-.75.75 1.5 1.5M15 11.25l-8.47 8.47c-.34.34-.8.53-1.28.53s-.94.19-1.28.53l-.97.97-.75-.75.97-.97c.34-.34.53-.8.53-1.28s.19-.94.53-1.28L12.75 9M15 11.25 12.75 9"
-            />
-          </svg>
-          Pick an identifier
-        </button>
+
+        {hiddenColumns.length > 0 && (
+          <div className="p-3 border-t border-base-300">
+            <label className="text-xs opacity-50 uppercase tracking-wide">
+              Unused columns
+            </label>
+            <div className="flex flex-wrap gap-1 mt-2">
+              {hiddenColumns.map((col: string) => (
+                <button
+                  key={col}
+                  onClick={() => showColumn(col)}
+                  className="badge badge-outline badge-sm gap-1 cursor-pointer hover:badge-neutral"
+                >
+                  + {col}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
