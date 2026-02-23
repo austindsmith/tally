@@ -1,46 +1,49 @@
+import { getAuthToken, removeAuthToken } from "./auth";
+
 export function getSheetId(url: string) {
   const match = url.match(/\/d\/(.+?)\//)?.[1];
-
   return match || "";
 }
 
-export async function getSheetNames(sheetId: string) {
-  // Add dropdown field to let user select which sheet to use
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`;
-  const options = {
-    method: "GET",
-    headers: { "x-goog-api-key": import.meta.env.WXT_GOOGLE_API_KEY },
-  };
+async function fetchWithAuth(url: string): Promise<Response> {
+  const token = await getAuthToken();
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
-  const sheetNames = [];
+  if (response.status === 401) {
+    await removeAuthToken(token);
+    const freshToken = await getAuthToken();
+    return fetch(url, {
+      headers: { Authorization: `Bearer ${freshToken}` },
+    });
+  }
+
+  return response;
+}
+
+export async function getSheetNames(sheetId: string) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}`;
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetchWithAuth(url);
     const data = await response.json();
-    const sheets = data.sheets;
-
-    for (let sheet in sheets) {
-      sheetNames.push(sheets[sheet].properties.title);
-    }
+    return data.sheets.map((sheet: any) => sheet.properties.title as string);
   } catch (error) {
     console.error(error);
+    return [];
   }
-  return sheetNames;
 }
+
 export async function readSheet(sheetId: string, sheetName: string) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}`;
-  const options = {
-    method: "GET",
-    headers: { "x-goog-api-key": import.meta.env.WXT_GOOGLE_API_KEY },
-  };
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName)}`;
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetchWithAuth(url);
 
     if (!response.ok) {
-      console.error("API Error:", response.status, response.statusText);
       const errorData = await response.json();
-      console.error("Error details:", errorData);
+      console.error("[TALLY] Sheet read error:", errorData);
       return [];
     }
 

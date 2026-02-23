@@ -20,7 +20,7 @@ type GoogleSheetStore = {
 export const useGoogleSheet = create<GoogleSheetStore>()(
   persist(
     (set, get) => ({
-      url: "https://docs.google.com/spreadsheets/d/1aSm4nwINqe_GxEDEjNlBy21mJzHi9Ort5iZJtpGBCyQ/edit?pli=1&gid=0#gid=0",
+      url: "",
       id: "",
       sheets: [],
       selectedSheet: "",

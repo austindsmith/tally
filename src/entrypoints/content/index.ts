@@ -7,11 +7,12 @@ export default defineContentScript({
     browser.runtime.onMessage.addListener((message) => {
       if (message.type === "START_PICK") {
         startPicker(message.column);
-        return;
+        return false;
       }
 
       if (message.type === "FILL") {
-        return Promise.resolve(executeFill(message.request as FillRequest));
+        const result = executeFill(message.request as FillRequest);
+        return Promise.resolve(result);
       }
 
       if (message.type === "READ_FIELD") {
@@ -27,6 +28,8 @@ export default defineContentScript({
 
         return Promise.resolve({ value });
       }
+
+      return false;
     });
   },
 });

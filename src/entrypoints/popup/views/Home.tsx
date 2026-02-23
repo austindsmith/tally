@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import tallyLogo from "../../../assets/text-logo.png";
 import { triggerFill } from "@/utils/fill";
 import { useSelectors } from "@/store/useSelectors";
 import { useGoogleSheet } from "@/store/useGoogleSheet";
+
+async function injectContentScript() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab.id) return;
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ["content-scripts/content.js"],
+  });
+}
 
 export default function Home() {
   const { fields } = useSelectors();
   const { data } = useGoogleSheet();
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    injectContentScript();
+  }, []);
 
   const hasMatch = Object.values(fields).some(
     (f) => f.role === "match" && f.selector,
@@ -24,12 +37,12 @@ export default function Home() {
       setLoading(true);
       const result = await triggerFill(fields, data);
 
-      if (result.success) {
+      if (result?.success) {
         setStatus(
           `Filled ${result.filled} field${result.filled === 1 ? "" : "s"} for "${result.matched}"`,
         );
       } else {
-        setStatus(result.errors.join(", "));
+        setStatus(result?.errors?.join(", ") ?? "Fill completed");
       }
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Fill failed");

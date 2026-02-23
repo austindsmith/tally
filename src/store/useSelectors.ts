@@ -86,18 +86,12 @@ export const useSelectors = create<SelectorStore>()(
       checkForPick: () => {
         const check = async () => {
           const result = await browser.storage.local.get("pickResult");
-          console.log("[TALLY] checkForPick result:", result);
           if (result.pickResult) {
             const { column, selector, preview } = result.pickResult as {
               column: string;
               selector: string;
               preview: string;
             };
-            console.log("[TALLY] applying pick:", {
-              column,
-              selector,
-              preview,
-            });
             get().setSelector(column, selector, preview);
             await browser.storage.local.remove("pickResult");
           }
@@ -106,7 +100,6 @@ export const useSelectors = create<SelectorStore>()(
         check();
 
         browser.storage.onChanged.addListener((changes, area) => {
-          console.log("[TALLY] storage changed:", area, changes);
           if (area === "local" && changes.pickResult?.newValue) {
             check();
           }
