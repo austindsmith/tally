@@ -5,9 +5,9 @@ import { useSelectors } from "@/store/useSelectors";
 import { useGoogleSheet } from "@/store/useGoogleSheet";
 
 async function injectContentScript() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
   if (!tab.id) return;
-  await chrome.scripting.executeScript({
+  await browser.scripting.executeScript({
     target: { tabId: tab.id },
     files: ["content-scripts/content.js"],
   });
