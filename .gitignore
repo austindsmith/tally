@@ -26,6 +26,6 @@ stats-*.json
 *.vscode
 *.prettierrc
 .chrome-profile*
-.env
+.env*
 credentials*
 quokka.ts

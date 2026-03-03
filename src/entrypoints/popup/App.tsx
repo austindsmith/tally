@@ -1,9 +1,10 @@
-import { useState } from "react";
 import { useGoogleSheet } from "@/store/useGoogleSheet";
+import { useSettings } from "@/store/useSettings";
 
 function App() {
   const init = useGoogleSheet((state) => state.initFromDefault);
-  const [view, setView] = useState<string>("login");
+  const view = useSettings((state) => state.activeView);
+  const setView = useSettings((state) => state.setActiveView);
   useEffect(() => {
     init();
   }, []);
