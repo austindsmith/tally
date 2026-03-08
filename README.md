@@ -2,6 +2,13 @@
 
 Tally is (going to be) a Chrome extension for my wife. It's a general data entry automater.
 
+### Todo
+
+- [ ] Fix authentication
+- [ ] Build proper landing page
+- [ ] FireFox version
+
+
 ### Resources
 
 #### Libraries
