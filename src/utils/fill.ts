@@ -1,4 +1,5 @@
 import type { FillResult } from "./automation";
+import { activeTabId, sendToTab } from "@/utils/messaging";
 
 type FieldMapping = {
   selector: string;
@@ -10,9 +11,7 @@ export async function triggerFill(
   fields: Record<string, FieldMapping>,
   sheetData: string[][],
 ): Promise<FillResult> {
-  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-  const tabId = tabs[0]?.id;
-  if (!tabId) throw new Error("No active tab");
+  const tabId = await activeTabId();
 
   const headers = sheetData[0];
   const rows = sheetData.slice(1);
@@ -30,7 +29,7 @@ export async function triggerFill(
 
   if (fills.length === 0) throw new Error("No fill fields configured");
 
-  return browser.tabs.sendMessage(tabId, {
+  return sendToTab<FillResult>(tabId, {
     type: "FILL",
     request: {
       matchColumn,

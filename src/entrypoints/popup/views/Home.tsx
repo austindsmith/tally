@@ -1,27 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import tallyLogo from "../../../assets/text-logo.png";
 import { triggerFill } from "@/utils/fill";
 import { useSelectors } from "@/store/useSelectors";
 import { useGoogleSheet } from "@/store/useGoogleSheet";
-
-async function injectContentScript() {
-  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-  if (!tab.id) return;
-  await browser.scripting.executeScript({
-    target: { tabId: tab.id },
-    files: ["content-scripts/content.js"],
-  });
-}
 
 export default function Home() {
   const { fields } = useSelectors();
   const { data } = useGoogleSheet();
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    injectContentScript();
-  }, []);
 
   const hasMatch = Object.values(fields).some(
     (f) => f.role === "match" && f.selector,

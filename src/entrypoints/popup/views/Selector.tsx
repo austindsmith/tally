@@ -8,6 +8,7 @@ export default function Selector() {
   const fields = useSelectors((state) => state.fields);
   const hidden = useSelectors((state) => state.hidden);
   const startPick = useSelectors((state) => state.startPick);
+  const pickError = useSelectors((state) => state.pickError);
   const setRole = useSelectors((state) => state.setRole);
   const hideColumn = useSelectors((state) => state.hideColumn);
   const showColumn = useSelectors((state) => state.showColumn);
@@ -29,6 +30,14 @@ export default function Selector() {
     <div className="w-96 h-[500px] p-4 bg-base-200 flex flex-col overflow-y-auto">
       <div className="flex flex-col h-full">
         <h1>Field Mappings</h1>
+
+        {pickError && (
+          <div role="alert" className="alert alert-error mb-2">
+            <span className="text-sm whitespace-pre-wrap break-words">
+              {pickError}
+            </span>
+          </div>
+        )}
         <div className="flex-1 p-3 overflow-y-auto max-h-80 space-y-2">
           {visibleColumns.map((column: string) => {
             const isExpanded = expanded === column;

@@ -1,6 +1,5 @@
 import Home from "@/entrypoints/popup/views/Home";
 import MasterTable from "@/entrypoints/popup/views/MasterTable";
-import Preview from "@/entrypoints/popup/views/Preview";
 import Selector from "@/entrypoints/popup/views/Selector";
 import Settings from "@/entrypoints/popup/views/Settings";
 

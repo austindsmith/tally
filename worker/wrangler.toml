@@ -1,0 +1,12 @@
+name = "tally-oauth"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+
+[vars]
+# Chrome uses a stable extension ID; Firefox assigns a random moz-extension
+# UUID per install, so it is matched by prefix.
+ALLOWED_ORIGINS = "chrome-extension://hldbbppbkneiemgpjaaplhbbpldgakmc,moz-extension://*"
+
+# Secrets are NOT set here. Set them once with:
+#   npx wrangler secret put GOOGLE_CLIENT_ID
+#   npx wrangler secret put GOOGLE_CLIENT_SECRET
