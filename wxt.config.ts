@@ -11,6 +11,7 @@ export default defineConfig({
       48: "icons/48.png",
       128: "icons/128.png",
     },
+
     permissions: ["activeTab", "scripting", "storage", "identity"],
     // Sheets is called directly; the Worker only brokers the token exchange.
     host_permissions: [
@@ -30,6 +31,7 @@ export default defineConfig({
           id: "tally@austinsmith.org",
           // browser.storage.session, used to cache access tokens, needs 115.
           strict_min_version: "115.0",
+          data_collection_permissions: { required: ["none"], optional: [] },
         },
       },
     }),
